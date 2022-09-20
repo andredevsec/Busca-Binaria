@@ -287,7 +287,7 @@ public class FormSistema extends javax.swing.JFrame {
                   d.setSaga(txtBusca.getText()); // alterar atributo de acordo com a seleção
                   // definir o comparator caso não seja o padrão na chamado da busca binária
                   int pos = Collections.binarySearch(lista,d , compareSaga);// int pos = Collections.binarySearch(lista,d,compareTempMax);
-                  if (pos <=0){
+                  if (pos <0){
                       JOptionPane.showMessageDialog(null,"Saga não encontrado"); 
                   }else{
                   JOptionPane.showMessageDialog(null,"Saga encontrada, posicao "+pos); 
