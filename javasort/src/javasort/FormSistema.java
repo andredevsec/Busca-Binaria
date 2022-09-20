@@ -8,13 +8,19 @@ public class FormSistema extends javax.swing.JFrame {
     ArrayList<Dados> lista = new ArrayList<>();
     Comparator<Dados> compareID = 
             (Dados a1, Dados a2) ->
-                    a1.getId()- a2.getId();
+                   a1.getId() - a2.getId();
     Comparator<Dados> comparePoder = 
             (Dados a1, Dados a2) ->
-                   (int) (a1.getPoder()- a2.getPoder());
+                    (int) (a1.getPoder()- a2.getPoder());
     Comparator<Dados> comparePersonagem = 
             (Dados a1, Dados a2) ->
                     a1.getPersonagem().compareTo(a2.getPersonagem());
+    Comparator<Dados> compareSaga = 
+            (Dados a1, Dados a2) ->
+                    a1.getSaga().compareTo(a2.getSaga());
+    Comparator<Dados> compareSerie = 
+            (Dados a1, Dados a2) ->
+                    a1.getSerie().compareTo(a2.getSerie());
     
     public FormSistema() {
         initComponents();
@@ -86,7 +92,12 @@ public class FormSistema extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tabelaDados);
 
-        cbOrdena.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Data", "Cidade", "Minima", "Máxima", "Vento Min", "Vento Max", " " }));
+        cbOrdena.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ID", "Persongaem", "Poder", "Saga", "Serie" }));
+        cbOrdena.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbOrdenaActionPerformed(evt);
+            }
+        });
 
         txtBusca.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Dados para busca", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI Light", 0, 14))); // NOI18N
 
@@ -104,6 +115,11 @@ public class FormSistema extends javax.swing.JFrame {
 
         buttonGroup1.add(opSeq);
         opSeq.setText("Sequencial");
+        opSeq.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                opSeqActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -215,11 +231,15 @@ public class FormSistema extends javax.swing.JFrame {
     
     private void btnOrdNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrdNomeActionPerformed
     switch(cbOrdena.getSelectedIndex()){    
-        case 0: lista.sort(comparePersonagem);
+        case 0: lista.sort(compareID);
             break;
         case 1: Collections.sort(lista);
             break;
-        case 2: lista.sort(compareID);
+        case 2: lista.sort(comparePoder);
+            break;
+        case 3: lista.sort(compareSaga);
+            break;
+        case 4: lista.sort(compareSerie);
             break;
         default: JOptionPane.showMessageDialog(null,"Em construção!");    
         }    
@@ -234,8 +254,8 @@ public class FormSistema extends javax.swing.JFrame {
         case 1:  if(opSeq.isSelected()){
                     for(Dados d: lista){
                         cont++;
-                        if(d.getPersonagem().equals(txtBusca.getText())){
-                          JOptionPane.showMessageDialog(null,"Cidade encontrada "+cont+" comparações");  
+                        if(d.getPersonagem().equalsIgnoreCase(txtBusca.getText())){
+                          JOptionPane.showMessageDialog(null,"Personagem encontrada "+cont+" comparações");  
                             break;
                         }      
                     }
@@ -244,15 +264,70 @@ public class FormSistema extends javax.swing.JFrame {
                   Dados d = new Dados();
                   d.setPersonagem(txtBusca.getText()); // alterar atributo de acordo com a seleção
                   // definir o comparator caso não seja o padrão na chamado da busca binária
-                  int pos = Collections.binarySearch(lista,d); // int pos = Collections.binarySearch(lista,d,compareTempMax);
-                  JOptionPane.showMessageDialog(null,"Cidade encontrada, posicao "+pos);  
+                  int pos = Collections.binarySearch(lista,d , comparePersonagem);// int pos = Collections.binarySearch(lista,d,compareTempMax);
+                  if (pos <=0){
+                      JOptionPane.showMessageDialog(null,"Personagem não encontrado"); 
+                  }else{
+                  JOptionPane.showMessageDialog(null,"Personagem encontrada, posicao "+pos); 
+                  
+                  }
                 }// fim else binary
             break;
-        case 2: 
+            case 3:  if(opSeq.isSelected()){
+                    for(Dados d: lista){
+                        cont++;
+                        if(d.getSaga().equalsIgnoreCase(txtBusca.getText())){
+                          JOptionPane.showMessageDialog(null,"Saga encontrada "+cont+" comparações");  
+                            break;
+                        }      
+                    }
+                }// fim if Sequencial;
+                else{
+                  Dados d = new Dados();
+                  d.setSaga(txtBusca.getText()); // alterar atributo de acordo com a seleção
+                  // definir o comparator caso não seja o padrão na chamado da busca binária
+                  int pos = Collections.binarySearch(lista,d , compareSaga);// int pos = Collections.binarySearch(lista,d,compareTempMax);
+                  if (pos <=0){
+                      JOptionPane.showMessageDialog(null,"Saga não encontrado"); 
+                  }else{
+                  JOptionPane.showMessageDialog(null,"Saga encontrada, posicao "+pos); 
+                  
+                  }
+                }// fim else binary
             break;
+        /*case 2: if(opSeq.isSelected()){
+                    for(Dados d: lista){
+                        cont++;
+                        if(txtBusca.getText().equals(d.getId())){
+                          JOptionPane.showMessageDialog(null,"ID encontrado "+cont+" comparações");  
+                            break;
+                        }      
+                    }
+                }// fim if Sequencial;
+                else{
+                  Dados d = new Dados();
+                  d.setId(Integer.parseInt(txtBusca.getText())); // alterar atributo de acordo com a seleção
+                  // definir o comparator caso não seja o padrão na chamado da busca binária
+                  int pos = Collections.binarySearch(lista,d , compareID);// int pos = Collections.binarySearch(lista,d,compareTempMax);
+                  if (pos <=0){
+                      JOptionPane.showMessageDialog(null,"ID não encontrado"); 
+                  }else{
+                  JOptionPane.showMessageDialog(null,"ID encontrada, posicao "+pos); 
+                  
+                  }
+                }// fim else binary
+            break;*/
         default: JOptionPane.showMessageDialog(null,"Em construção!");              
         }// switch
     }//GEN-LAST:event_btnBuscaActionPerformed
+
+    private void cbOrdenaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbOrdenaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbOrdenaActionPerformed
+
+    private void opSeqActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_opSeqActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_opSeqActionPerformed
     
     /**
      * @param args the command line arguments
